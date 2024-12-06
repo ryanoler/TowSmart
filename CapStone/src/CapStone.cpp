@@ -4,6 +4,8 @@
 #include "Adafruit_MQTT/Adafruit_MQTT_SPARK.h"
 #include "Adafruit_MQTT/Adafruit_MQTT.h"
 #include "credentials.h"
+#include "Grove_Air_Quality_Sensor.h"
+
 byte accel_x_h, accel_x_l;
 byte accel_y_h, accel_y_l;
 byte accel_z_h, accel_z_l;
@@ -13,11 +15,13 @@ int16_t accel_z;
 float xGravity, yGravity, zGravity;
 float pitch, roll, pitchDeg, rollDeg;
 float totalAccel; // Total acceleration (magnitude)
-int MPU_ADDRESS = 0x68;
-
+ int flameSensorPin1 =A0;
+ int flameSensorPin2 =A1;
+ int MPU_ADDRESS=0x68;
+ int Value;
 unsigned int last, lastTime;
 int pubValue;
-
+AirQualitySensor sensor(A2);
 
 TCPClient TheClient;
 Adafruit_MQTT_SPARK mqtt(&TheClient, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
@@ -55,8 +59,9 @@ void setup()
 }
 
 void loop() {
+  
  MQTT_connect();
-  MQTT_ping();
+ MQTT_ping();
     // x
   Wire.beginTransmission(MPU_ADDRESS);
   Wire.write(0x3B);
@@ -144,6 +149,7 @@ bool MQTT_ping() {
       last = millis();
   }
   return pingStatus;
+
 }
 //unsigned long previousMillis = 0; // stores the last time the sensor data was updated
 //const long interval = 10000;
