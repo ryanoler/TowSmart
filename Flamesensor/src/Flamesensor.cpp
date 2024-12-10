@@ -4,8 +4,8 @@
 #include "Particle.h"
  int flameSensorPin1 =A0;
  int flameSensorPin2 =A1;
-int value;
-int heat;
+ int value;
+ int heat;
 SYSTEM_MODE(AUTOMATIC);
 
 
