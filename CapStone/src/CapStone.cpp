@@ -38,8 +38,9 @@ Adafruit_MQTT_SPARK mqtt(&TheClient, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, A
 Adafruit_MQTT_Publish pitchFeed = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/pitchDeg");
 Adafruit_MQTT_Publish rollFeed = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/rollDeg");
 Adafruit_MQTT_Publish totalAccelFeed = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/totalAccel");
-
-
+Adafruit_MQTT_Publish sensorgetValueFeed = Adafruit_MQTT_Publish(&mqtt,AIO_USERNAME "/feeds/sensorgetValue");
+Adafruit_MQTT_Publish flameSensorPin1Feed = Adafruit_MQTT_Publish(&mqtt,AIO_USERNAME "/feeds/flameSensorPin1fe");
+Adafruit_MQTT_Publish flameSensorPin2Feed = Adafruit_MQTT_Publish(&mqtt,AIO_USERNAME "/feeds/flameSensorPin1fe");
 
 void MQTT_connect();
 bool MQTT_ping();
@@ -48,7 +49,7 @@ SYSTEM_MODE(AUTOMATIC);
 
 SYSTEM_THREAD(ENABLED);
 
-SerialLogHandler logHandler(LOG_LEVEL_INFO);
+//SerialLogHandler logHandler(LOG_LEVEL_INFO);
 
 
 void setup()
@@ -143,6 +144,22 @@ void loop() {
           }
           
       }
+      int quality = sensor.slope();
+
+    Serial.print("Sensor value: ");
+    Serial.println(sensor.getValue());
+
+    // if (quality == AirQualitySensor::FORCE_SIGNAL) {
+    //     Serial.println("High pollution! Force signal active.");
+    // } else if (quality == AirQualitySensor::HIGH_POLLUTION) {
+    //     Serial.println("High pollution!");
+    // } else if (quality == AirQualitySensor::LOW_POLLUTION) {
+    //     Serial.println("Low pollution!");
+    // } else if (quality == AirQualitySensor::FRESH_AIR) {
+    //     Serial.println("Fresh air.");
+    // }
+
+  
       Serial.printf("max Acceleration = %.2f g\n",maxShock);
       lastTime =millis();
     }
@@ -151,7 +168,13 @@ void loop() {
       pitchFeed.publish(pitchDeg);   // Publish pitch degree to MQTT
       rollFeed.publish(rollDeg);     // Publish roll degree to MQTT
       totalAccelFeed.publish(maxShock);  // Publish total acceleration to MQTT
+      sensorgetValueFeed.publish (sensor.getValue());
+      
       lastPublish=millis();
+
+
+
+
     }  
 
     }
@@ -192,22 +215,6 @@ bool MQTT_ping() {
   }
   return pingStatus;
 
-      int quality = sensor.slope();
-
-    Serial.print("Sensor value: ");
-    Serial.println(sensor.getValue());
-
-    if (quality == AirQualitySensor::FORCE_SIGNAL) {
-        Serial.println("High pollution! Force signal active.");
-    } else if (quality == AirQualitySensor::HIGH_POLLUTION) {
-        Serial.println("High pollution!");
-    } else if (quality == AirQualitySensor::LOW_POLLUTION) {
-        Serial.println("Low pollution!");
-    } else if (quality == AirQualitySensor::FRESH_AIR) {
-        Serial.println("Fresh air.");
-    }
-
-    delay(1000);
 
 }
 //unsigned long previousMillis = 0; // stores the last time the sensor data was updated
