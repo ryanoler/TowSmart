@@ -163,13 +163,14 @@ void loop() {
       Serial.printf("max Acceleration = %.2f g\n",maxShock);
       lastTime =millis();
     }
-    if (millis () - lastPublish > 6000){
+    if (millis () - lastPublish > 8000){
       if (mqtt.Update()) {
       pitchFeed.publish(pitchDeg);   // Publish pitch degree to MQTT
       rollFeed.publish(rollDeg);     // Publish roll degree to MQTT
       totalAccelFeed.publish(maxShock);  // Publish total acceleration to MQTT
       sensorgetValueFeed.publish (sensor.getValue());
-      
+      flameSensorPin1Feed.publish(value);
+      flameSensorPin2Feed.publish(heat);
       lastPublish=millis();
 
 
